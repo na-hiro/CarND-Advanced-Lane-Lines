@@ -16,6 +16,7 @@ The goals / steps of this project are the following:
 * Warp the detected lane boundaries back onto the original image.
 * Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
 
+
 [//]: # (Image References)
 
 [image1]: ./output_images/01_all_checkboad.png "Checkboads"
@@ -41,9 +42,9 @@ The goals / steps of this project are the following:
 
 ### Camera Calibration
 
-#### 1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
+The code for this step is contained in "./Camera_Calibration.ipynb".  
 
-The code for this step is contained in the first code cell of the IPython notebook located in "./Camera_Calibration.ipynb".  
+#### 1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
 
 I start by preparing "object points", which will be the (x, y, z) coordinates of the chessboard corners in the world. Here I am assuming the chessboard is fixed on the (x, y) plane at z=0, such that the object points are the same for each calibration image.  Thus, `objp` is just a replicated array of coordinates, and `objpoints` will be appended with a copy of it every time I successfully detect all chessboard corners in a test image.  `imgpoints` will be appended with the (x, y) pixel position of each of the corners in the image plane with each successful chessboard detection.  
 
@@ -56,6 +57,7 @@ I applied this distortion correction to the test image using the `cv2.undistort(
 ![alt text][image2]
 
 ### Pipeline (single images)
+The code for this step is contained in "./CarND-Advanced-Lane-Lines.ipynb".  
 
 #### 1. Provide an example of a distortion-corrected image.
 
@@ -87,12 +89,12 @@ The results of converting the RGB image into the HLS image are shown below.
 
 ##### 4.1.1 Color Threshold Processing
 The threshold processing is performed on the HLS image and the result of extracting the lane candidate is shown below.
-It was confirmed that yellow and white lanes were extracted efficiently.
+It was confirmed that yellow and white lanes were extracted efficiently. The function name of this operation is `det_lines_by_hls_color()`.
 
 ![alt text][image6]
 
 ##### 4.1.2 Threshold processing of gradient and its direction
-Here, I explain the magnitude of the gradient of the HLS image and the thresholding of that direction. By combining this processing with color threshold processing, narrowing down of lane candidate points becomes possible.
+Here, I explain the magnitude of the gradient of the HLS image and the thresholding of that direction. By combining this processing with color threshold processing, narrowing down of lane candidate points becomes possible.The function name of this operation is `combine_color_and_gradient()`.
 
 ![alt text][image7]
 
@@ -108,7 +110,7 @@ In this section, a method to approximate extracted lane candidate points to quad
 
 Here, the points extracted as candidate points of the lane by thresholding are further selected. The selection method is as follows. A small window is created, and points extracted by thresholding in that window are selected as carefully selected points.
 
-As for the window creation method, a histogram is generated with the image after thresholding as the axis in the horizontal direction, and a small window is generated around パースペクティブ変換the peak point. Multiple windows are created on one line and are generated at the optimum position while being updated sequentially.
+As for the window creation method, a histogram is generated with the image after thresholding as the axis in the horizontal direction, and a small window is generated around the peak point. Multiple windows are created on one line and are generated at the optimum position while being updated sequentially.
 
 The generated sliding window is shown below.
 
@@ -128,11 +130,11 @@ The extraction processing results using past frames are shown below. The green a
 
 #### 6.Measuring Curvature
 This section describes how to calculate curvature and car position.
-First of all, we measure the relationship between the distance of the real space and the image converted to the bird's-eye view. The correspondence is shown in the figure below. From now on, calculate the distance (transformation coefficient) of the real space per pixel and calculate the curvature.
+First of all, we measure the relationship between the distance of the real space and the image converted to the bird's-eye view. The correspondence is shown in the figure below. From now on, calculate the distance (transformation coefficient) of the real space per pixel and calculate the curvature.The function name of this operation is `calc_curv_rad_and_center_dist()`.
 
 ![alt text][image12]
 
-Furthermore, the position of the car is calculated by multiplying the center deviation of the left and right lanes by the conversion factor.The reference diagram is shown below.
+Furthermore, the position of the car is calculated by multiplying the center deviation of the left and right lanes by the conversion factor.The reference diagram is shown below.The quadratic approximate expression on the bird's eye view is as shown in the figure below.
 
 ![alt text][image14]
 
